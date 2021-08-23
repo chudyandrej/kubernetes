@@ -56,7 +56,11 @@ func (pl *PrepullInitialized) Filter(ctx context.Context, _ *framework.CycleStat
 
 // Fits actually checks if the pod fits the node.
 func Fits(pod *v1.Pod, nodeInfo *framework.NodeInfo) bool {
-	fmt.Println("fit check PrepullInitialized")
+	fmt.Println("=============")
+
+	fmt.Println("Node:")
+	fmt.Println(nodeInfo.Node().Name)
+
 	for _, pi := range nodeInfo.Pods {
 		fmt.Println(pi.Pod.Name)
 		fmt.Println(pi.Pod.Status.Phase)
