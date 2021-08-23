@@ -49,33 +49,20 @@ data:
     profiles:
       - schedulerName: my-scheduler
         plugins:
-          preFilter:
-            enabled:
-            - name: ImageLocality
-
           score:
             disabled:
-            - name: SelectorSpread
-            - name: TaintToleration
-            - name: PodTopologySpread
-            - name: NodeResourcesBalancedAllocation
-            - name: NodeResourcesLeastAllocated
-            - name: NodePreferAvoidPods
-            - name: NodeAffinity
-            - name: InterPodAffinity
             - name: ImageLocality
             enabled:
-            - name: NodePreferAvoidPods
-              weight: 161051
-            - name: NodeAffinity
-              weight: 14631
-            - name: InterPodAffinity
-              weight: 1331
-            - name: NodeResourcesMostAllocated
-              weight: 121
             - name: ImageLocality
-              weight: 11
+              weight: 14631
+    ---
+    apiVersion: kubescheduler.config.k8s.io/v1
+    kind: Policy
+    priorities:
+      - name: MostRequestedPriority
+        weight: 161051
 
+ 
 ---
 
 apiVersion: apps/v1
@@ -102,7 +89,7 @@ spec:
       serviceAccountName: my-scheduler
       containers:
       - name: kube-scheduler
-        image: k8s.gcr.io/kube-scheduler:v1.19.13
+        image: 978928340082.dkr.ecr.us-east-1.amazonaws.com/kube-scheduler-test:v3
         command:
           - /usr/local/bin/kube-scheduler
           - --config=/etc/user-scheduler/config.yaml
