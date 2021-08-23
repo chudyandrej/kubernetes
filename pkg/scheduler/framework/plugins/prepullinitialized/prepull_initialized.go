@@ -49,7 +49,7 @@ func (pl *PrepullInitialized) Filter(ctx context.Context, _ *framework.CycleStat
 		return framework.NewStatus(framework.Error, "node not found")
 	}
 	if !Fits(pod, nodeInfo) {
-		return framework.NewStatus(framework.UnschedulableAndUnresolvable, ErrReason)
+		return framework.NewStatus(framework.Unschedulable, ErrReason)
 	}
 	return nil
 }
