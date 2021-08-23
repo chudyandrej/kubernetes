@@ -36,6 +36,7 @@ import (
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/nodeunschedulable"
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/nodevolumelimits"
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/podtopologyspread"
+	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/prepullinitialized"
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/queuesort"
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/selectorspread"
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/tainttoleration"
@@ -96,6 +97,7 @@ func getDefaultConfig() *schedulerapi.Plugins {
 				{Name: nodeunschedulable.Name},
 				{Name: noderesources.FitName},
 				{Name: nodename.Name},
+				{Name: prepullinitialized.Name},
 				{Name: nodeports.Name},
 				{Name: nodeaffinity.Name},
 				{Name: volumerestrictions.Name},
