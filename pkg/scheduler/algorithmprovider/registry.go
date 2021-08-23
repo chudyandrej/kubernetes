@@ -97,7 +97,6 @@ func getDefaultConfig() *schedulerapi.Plugins {
 				{Name: nodeunschedulable.Name},
 				{Name: noderesources.FitName},
 				{Name: nodename.Name},
-				{Name: prepullinitialized.Name},
 				{Name: nodeports.Name},
 				{Name: nodeaffinity.Name},
 				{Name: volumerestrictions.Name},
@@ -110,6 +109,7 @@ func getDefaultConfig() *schedulerapi.Plugins {
 				{Name: volumezone.Name},
 				{Name: podtopologyspread.Name},
 				{Name: interpodaffinity.Name},
+				{Name: prepullinitialized.Name},
 			},
 		},
 		PostFilter: &schedulerapi.PluginSet{
