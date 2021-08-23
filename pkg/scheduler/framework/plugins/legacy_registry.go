@@ -251,6 +251,8 @@ func NewLegacyRegistry() *LegacyRegistry {
 	registry.registerPredicateConfigProducer(HostNamePred,
 		func(_ ConfigProducerArgs) (plugins config.Plugins, pluginConfig []config.PluginConfig) {
 			plugins.Filter = appendToPluginSet(plugins.Filter, nodename.Name, nil)
+			plugins.Filter = appendToPluginSet(plugins.Filter, prepullinitialized.Name, nil)
+
 			return
 		})
 	registry.registerPredicateConfigProducer(PodFitsHostPortsPred,
