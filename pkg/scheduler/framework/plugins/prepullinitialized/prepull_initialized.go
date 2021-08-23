@@ -65,7 +65,7 @@ func Fits(pod *v1.Pod, nodeInfo *framework.NodeInfo) bool {
 		fmt.Println(pi.Pod.Name)
 		fmt.Println(pi.Pod.Status.Phase)
 
-		if strings.Contains(pi.Pod.Name, "placeholder") && pi.Pod.Status.Phase == "Running" {
+		if strings.Contains(pi.Pod.Name, "prepull") && pi.Pod.Status.Phase == "Running" {
 			return true
 		}
 	}
