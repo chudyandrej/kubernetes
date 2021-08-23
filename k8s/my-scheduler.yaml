@@ -1,0 +1,130 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-scheduler
+  namespace: kube-system
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: my-scheduler-as-kube-scheduler
+subjects:
+- kind: ServiceAccount
+  name: my-scheduler
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: system:kube-scheduler
+  apiGroup: rbac.authorization.k8s.io
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: my-scheduler-as-volume-scheduler
+subjects:
+- kind: ServiceAccount
+  name: my-scheduler
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: system:volume-scheduler
+  apiGroup: rbac.authorization.k8s.io
+---
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: my-scheduler-config
+  namespace: kube-system
+  labels:
+    component: my-scheduler-config
+data:
+  # ref: https://kubernetes.io/docs/reference/scheduling/config/
+  config.yaml: |
+    apiVersion: kubescheduler.config.k8s.io/v1beta1
+    kind: KubeSchedulerConfiguration
+    profiles:
+      - schedulerName: my-scheduler
+        plugins:
+          preFilter:
+            enabled:
+            - name: ImageLocality
+
+          score:
+            disabled:
+            - name: SelectorSpread
+            - name: TaintToleration
+            - name: PodTopologySpread
+            - name: NodeResourcesBalancedAllocation
+            - name: NodeResourcesLeastAllocated
+            - name: NodePreferAvoidPods
+            - name: NodeAffinity
+            - name: InterPodAffinity
+            - name: ImageLocality
+            enabled:
+            - name: NodePreferAvoidPods
+              weight: 161051
+            - name: NodeAffinity
+              weight: 14631
+            - name: InterPodAffinity
+              weight: 1331
+            - name: NodeResourcesMostAllocated
+              weight: 121
+            - name: ImageLocality
+              weight: 11
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: scheduler
+    tier: control-plane
+  name: my-scheduler
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      component: scheduler
+      tier: control-plane
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: scheduler
+        tier: control-plane
+        version: second
+    spec:
+      serviceAccountName: my-scheduler
+      containers:
+      - name: kube-scheduler
+        image: k8s.gcr.io/kube-scheduler:v1.19.13
+        command:
+          - /usr/local/bin/kube-scheduler
+          - --config=/etc/user-scheduler/config.yaml
+          - --authentication-skip-lookup=true
+          - --v=4
+        volumeMounts:
+          - mountPath: /etc/user-scheduler
+            name: config
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
+          initialDelaySeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsGroup: 65534
+          runAsUser: 65534
+      volumes:
+        - name: config
+          configMap:
+            name: my-scheduler-config

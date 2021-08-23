@@ -198,6 +198,12 @@ func (f *Fit) Filter(ctx context.Context, cycleState *framework.CycleState, pod 
 		return framework.NewStatus(framework.Error, err.Error())
 	}
 
+	for _, pi := range nodeInfo.Pods {
+		if strings.Contains(pi.Pod.Name, "placeholder") {
+			return nil
+		}
+	}
+
 	insufficientResources := fitsRequest(s, nodeInfo, f.ignoredResources, f.ignoredResourceGroups)
 
 	if len(insufficientResources) != 0 {
