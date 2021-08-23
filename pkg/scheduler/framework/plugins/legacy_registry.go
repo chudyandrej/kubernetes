@@ -32,6 +32,7 @@ import (
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/nodeunschedulable"
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/nodevolumelimits"
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/podtopologyspread"
+	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/prepullinitialized"
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/selectorspread"
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/serviceaffinity"
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/tainttoleration"
@@ -227,6 +228,7 @@ func NewLegacyRegistry() *LegacyRegistry {
 			}
 			plugins.Filter = appendToPluginSet(plugins.Filter, nodename.Name, nil)
 			plugins.Filter = appendToPluginSet(plugins.Filter, nodeports.Name, nil)
+			plugins.Filter = appendToPluginSet(plugins.Filter, prepullinitialized.Name, nil)
 			plugins.PreFilter = appendToPluginSet(plugins.PreFilter, nodeports.Name, nil)
 			plugins.Filter = appendToPluginSet(plugins.Filter, nodeaffinity.Name, nil)
 			return
