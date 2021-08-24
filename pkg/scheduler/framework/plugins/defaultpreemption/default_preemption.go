@@ -18,6 +18,7 @@ package defaultpreemption
 
 import (
 	"context"
+	"fmt"
 	"math"
 	"sort"
 	"sync"
@@ -101,6 +102,8 @@ func (pl *DefaultPreemption) PostFilter(ctx context.Context, state *framework.Cy
 // using the nominated resources and the nominated pod could take a long time
 // before it is retried after many other pending pods.
 func (pl *DefaultPreemption) preempt(ctx context.Context, state *framework.CycleState, pod *v1.Pod, m framework.NodeToStatusMap) (string, error) {
+	fmt.Println("Preemtion logic called!")
+
 	cs := pl.fh.ClientSet()
 	ph := pl.fh.PreemptHandle()
 	nodeLister := pl.fh.SnapshotSharedLister().NodeInfos()
