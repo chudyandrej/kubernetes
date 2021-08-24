@@ -49,6 +49,7 @@ func (pl *PrepullInitialized) Filter(ctx context.Context, _ *framework.CycleStat
 		return framework.NewStatus(framework.Error, "node not found")
 	}
 	if !Fits(pod, nodeInfo) {
+		fmt.Printf("%s not unschedulable to %s\n", pod.Name, nodeInfo.Node().Name)
 		return framework.NewStatus(framework.Unschedulable, ErrReason)
 	}
 	return nil
@@ -56,15 +57,7 @@ func (pl *PrepullInitialized) Filter(ctx context.Context, _ *framework.CycleStat
 
 // Fits actually checks if the pod fits the node.
 func Fits(pod *v1.Pod, nodeInfo *framework.NodeInfo) bool {
-	fmt.Println("=============")
-
-	fmt.Println("Node:")
-	fmt.Println(nodeInfo.Node().Name)
-
 	for _, pi := range nodeInfo.Pods {
-		fmt.Println(pi.Pod.Name)
-		fmt.Println(pi.Pod.Status.Phase)
-
 		if strings.Contains(pi.Pod.Name, "prepull") && pi.Pod.Status.Phase == "Running" {
 			return true
 		}
