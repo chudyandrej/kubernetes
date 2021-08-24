@@ -127,6 +127,7 @@ func (pl *DefaultPreemption) preempt(ctx context.Context, state *framework.Cycle
 	if err != nil || len(candidates) == 0 {
 		return "", err
 	}
+	fmt.Println(candidates)
 
 	// 3) Interact with registered Extenders to filter out some candidates if needed.
 	candidates, err = CallExtenders(ph.Extenders(), pod, nodeLister, candidates)
